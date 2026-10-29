@@ -1,0 +1,210 @@
+// CarinderEase. Consult schema.sql for CHECKs, composite keys and generated columns.
+Table roles {
+  role_id int [pk, increment]
+  role_name varchar(30)
+  description varchar(255)
+}
+Table users {
+  user_id int [pk, increment]
+  role_id int
+  owner_guard tinyint [unique, note: 'Generated: 1 for Owner, otherwise NULL']
+  full_name varchar(100)
+  username varchar(50)
+  password_hash varchar(255)
+  is_active boolean
+  created_at datetime
+  updated_at datetime
+}
+Table menu_categories {
+  category_id int [pk, increment]
+  name varchar(50)
+  is_active boolean
+}
+Table menu_items {
+  menu_item_id int [pk, increment]
+  category_id int
+  name varchar(100)
+  item_type varchar(10)
+  standard_price decimal(12,2)
+  includes_unli_rice boolean
+  refill_menu_item_id int
+  is_active boolean
+  created_at datetime
+  updated_at datetime
+}
+Table daily_menu_items {
+  daily_menu_item_id int [pk, increment]
+  menu_item_id int
+  menu_date date
+  selling_price decimal(12,2)
+  prepared_qty int
+  wasted_qty int
+  is_enabled boolean
+  updated_by int
+  created_at datetime
+  updated_at datetime
+}
+Table combo_components {
+  combo_component_id int [pk, increment]
+  combo_menu_item_id int
+  component_menu_item_id int
+  quantity int
+}
+Table cash_sessions {
+  cash_session_id int [pk, increment]
+  user_id int
+  opened_at datetime
+  closed_at datetime
+  opening_float decimal(12,2)
+  counted_cash decimal(12,2)
+  status varchar(10)
+  open_guard tinyint
+}
+Table sales {
+  sale_id int [pk, increment]
+  sale_number varchar(30)
+  checkout_token varchar(64)
+  cash_session_id int
+  sold_at datetime
+  order_type varchar(10)
+  total_amount decimal(12,2)
+}
+Table sale_items {
+  sale_item_id int [pk, increment]
+  sale_id int
+  daily_menu_item_id int
+  item_name_snapshot varchar(100)
+  quantity int
+  unit_price decimal(12,2)
+  unli_rice_granted boolean
+  refill_menu_item_id int
+  refill_closed_at datetime
+  refill_closed_by int
+}
+Table sale_item_components {
+  serving_id int [pk, increment]
+  sale_item_id int
+  daily_menu_item_id int
+  quantity int
+  serving_type varchar(10)
+  operation_token varchar(64)
+  served_by int
+  served_at datetime
+}
+Table payments {
+  payment_id int [pk, increment]
+  sale_id int
+  amount_paid decimal(12,2)
+  cash_tendered decimal(12,2)
+  change_given decimal(12,2)
+  paid_at datetime
+}
+Table units {
+  unit_id int [pk, increment]
+  unit_name varchar(30)
+  symbol varchar(10)
+}
+Table inventory_items {
+  inventory_item_id int [pk, increment]
+  unit_id int
+  name varchar(100)
+  reorder_level decimal(12,3)
+  is_active boolean
+  created_at datetime
+  updated_at datetime
+}
+Table suppliers {
+  supplier_id int [pk, increment]
+  name varchar(100)
+  contact_number varchar(30)
+  address varchar(255)
+  is_active boolean
+}
+Table stock_receipts {
+  stock_receipt_id int [pk, increment]
+  receipt_token varchar(64)
+  supplier_id int
+  received_by int
+  received_at datetime
+  reference_number varchar(50)
+  payment_source varchar(10)
+  cash_session_id int
+  status varchar(10)
+  posted_at datetime
+}
+Table stock_receipt_items {
+  stock_receipt_item_id int [pk, increment]
+  stock_receipt_id int
+  inventory_item_id int
+  quantity decimal(12,3)
+  unit_cost decimal(12,2)
+}
+Table stock_movements {
+  movement_id int [pk, increment]
+  inventory_item_id int
+  stock_receipt_item_id int
+  movement_type varchar(20)
+  quantity_change decimal(12,3)
+  reason varchar(255)
+  operation_token varchar(64)
+  recorded_by int
+  recorded_at datetime
+}
+Table expense_categories {
+  expense_category_id int [pk, increment]
+  name varchar(50)
+  is_active boolean
+}
+Table expenses {
+  expense_id int [pk, increment]
+  expense_category_id int
+  amount decimal(12,2)
+  paid_at datetime
+  description varchar(255)
+  payment_source varchar(10)
+  cash_session_id int
+  operation_token varchar(64)
+  recorded_by int
+  created_at datetime
+}
+Table audit_logs {
+  audit_log_id int [pk, increment]
+  user_id int
+  action varchar(50)
+  entity_name varchar(50)
+  record_id int
+  old_values text
+  new_values text
+  reason varchar(255)
+  created_at datetime
+}
+Ref: users.role_id > roles.role_id
+Ref: menu_items.category_id > menu_categories.category_id
+Ref: menu_items.refill_menu_item_id > menu_items.menu_item_id
+Ref: daily_menu_items.menu_item_id > menu_items.menu_item_id
+Ref: daily_menu_items.updated_by > users.user_id
+Ref: combo_components.combo_menu_item_id > menu_items.menu_item_id
+Ref: combo_components.component_menu_item_id > menu_items.menu_item_id
+Ref: cash_sessions.user_id > users.user_id
+Ref: sales.cash_session_id > cash_sessions.cash_session_id
+Ref: sale_items.sale_id > sales.sale_id
+Ref: sale_items.daily_menu_item_id > daily_menu_items.daily_menu_item_id
+Ref: sale_items.refill_menu_item_id > menu_items.menu_item_id
+Ref: sale_items.refill_closed_by > users.user_id
+Ref: sale_item_components.sale_item_id > sale_items.sale_item_id
+Ref: sale_item_components.daily_menu_item_id > daily_menu_items.daily_menu_item_id
+Ref: sale_item_components.served_by > users.user_id
+Ref: payments.sale_id > sales.sale_id
+Ref: inventory_items.unit_id > units.unit_id
+Ref: stock_receipts.supplier_id > suppliers.supplier_id
+Ref: stock_receipts.received_by > users.user_id
+Ref: stock_receipts.cash_session_id > cash_sessions.cash_session_id
+Ref: stock_receipt_items.stock_receipt_id > stock_receipts.stock_receipt_id
+Ref: stock_receipt_items.inventory_item_id > inventory_items.inventory_item_id
+Ref: stock_movements.inventory_item_id > inventory_items.inventory_item_id
+Ref: stock_movements.stock_receipt_item_id > stock_receipt_items.stock_receipt_item_id
+Ref: stock_movements.recorded_by > users.user_id
+Ref: expenses.expense_category_id > expense_categories.expense_category_id
+Ref: expenses.cash_session_id > cash_sessions.cash_session_id
+Ref: expenses.recorded_by > users.user_id
+Ref: audit_logs.user_id > users.user_id

@@ -1,0 +1,843 @@
+{
+  "roles": {
+    "fields": [
+      [
+        "role_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "role_name",
+        "VARCHAR(30)"
+      ],
+      [
+        "description",
+        "VARCHAR(255)"
+      ]
+    ],
+    "pk": "role_id",
+    "refs": []
+  },
+  "users": {
+    "fields": [
+      [
+        "user_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "role_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "owner_guard",
+        "TINYINT (STORED GENERATED; UNIQUE)"
+      ],
+      [
+        "full_name",
+        "VARCHAR(100)"
+      ],
+      [
+        "username",
+        "VARCHAR(50)"
+      ],
+      [
+        "password_hash",
+        "VARCHAR(255)"
+      ],
+      [
+        "is_active",
+        "BOOLEAN"
+      ],
+      [
+        "created_at",
+        "DATETIME"
+      ],
+      [
+        "updated_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "user_id",
+    "refs": [
+      [
+        "role_id",
+        "roles",
+        "role_id"
+      ]
+    ]
+  },
+  "menu_categories": {
+    "fields": [
+      [
+        "category_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "name",
+        "VARCHAR(50)"
+      ],
+      [
+        "is_active",
+        "BOOLEAN"
+      ]
+    ],
+    "pk": "category_id",
+    "refs": []
+  },
+  "menu_items": {
+    "fields": [
+      [
+        "menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "category_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "name",
+        "VARCHAR(100)"
+      ],
+      [
+        "item_type",
+        "VARCHAR(10)"
+      ],
+      [
+        "standard_price",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "includes_unli_rice",
+        "BOOLEAN"
+      ],
+      [
+        "refill_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "is_active",
+        "BOOLEAN"
+      ],
+      [
+        "created_at",
+        "DATETIME"
+      ],
+      [
+        "updated_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "menu_item_id",
+    "refs": [
+      [
+        "category_id",
+        "menu_categories",
+        "category_id"
+      ],
+      [
+        "refill_menu_item_id",
+        "menu_items",
+        "menu_item_id"
+      ]
+    ]
+  },
+  "daily_menu_items": {
+    "fields": [
+      [
+        "daily_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "menu_date",
+        "DATE"
+      ],
+      [
+        "selling_price",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "prepared_qty",
+        "INT UNSIGNED"
+      ],
+      [
+        "wasted_qty",
+        "INT UNSIGNED"
+      ],
+      [
+        "is_enabled",
+        "BOOLEAN"
+      ],
+      [
+        "updated_by",
+        "INT UNSIGNED"
+      ],
+      [
+        "created_at",
+        "DATETIME"
+      ],
+      [
+        "updated_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "daily_menu_item_id",
+    "refs": [
+      [
+        "menu_item_id",
+        "menu_items",
+        "menu_item_id"
+      ],
+      [
+        "updated_by",
+        "users",
+        "user_id"
+      ]
+    ]
+  },
+  "combo_components": {
+    "fields": [
+      [
+        "combo_component_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "combo_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "component_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "quantity",
+        "INT UNSIGNED"
+      ]
+    ],
+    "pk": "combo_component_id",
+    "refs": [
+      [
+        "combo_menu_item_id",
+        "menu_items",
+        "menu_item_id"
+      ],
+      [
+        "component_menu_item_id",
+        "menu_items",
+        "menu_item_id"
+      ]
+    ]
+  },
+  "cash_sessions": {
+    "fields": [
+      [
+        "cash_session_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "user_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "opened_at",
+        "DATETIME"
+      ],
+      [
+        "closed_at",
+        "DATETIME"
+      ],
+      [
+        "opening_float",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "counted_cash",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "status",
+        "VARCHAR(10)"
+      ],
+      [
+        "open_guard",
+        "TINYINT"
+      ]
+    ],
+    "pk": "cash_session_id",
+    "refs": [
+      [
+        "user_id",
+        "users",
+        "user_id"
+      ]
+    ]
+  },
+  "sales": {
+    "fields": [
+      [
+        "sale_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "sale_number",
+        "VARCHAR(30)"
+      ],
+      [
+        "checkout_token",
+        "VARCHAR(64)"
+      ],
+      [
+        "cash_session_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "sold_at",
+        "DATETIME"
+      ],
+      [
+        "order_type",
+        "VARCHAR(10)"
+      ],
+      [
+        "total_amount",
+        "DECIMAL(12,2)"
+      ]
+    ],
+    "pk": "sale_id",
+    "refs": [
+      [
+        "cash_session_id",
+        "cash_sessions",
+        "cash_session_id"
+      ]
+    ]
+  },
+  "sale_items": {
+    "fields": [
+      [
+        "sale_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "sale_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "daily_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "item_name_snapshot",
+        "VARCHAR(100)"
+      ],
+      [
+        "quantity",
+        "INT UNSIGNED"
+      ],
+      [
+        "unit_price",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "unli_rice_granted",
+        "BOOLEAN"
+      ],
+      [
+        "refill_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "refill_closed_at",
+        "DATETIME"
+      ],
+      [
+        "refill_closed_by",
+        "INT UNSIGNED"
+      ]
+    ],
+    "pk": "sale_item_id",
+    "refs": [
+      [
+        "sale_id",
+        "sales",
+        "sale_id"
+      ],
+      [
+        "daily_menu_item_id",
+        "daily_menu_items",
+        "daily_menu_item_id"
+      ],
+      [
+        "refill_menu_item_id",
+        "menu_items",
+        "menu_item_id"
+      ],
+      [
+        "refill_closed_by",
+        "users",
+        "user_id"
+      ]
+    ]
+  },
+  "sale_item_components": {
+    "fields": [
+      [
+        "serving_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "sale_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "daily_menu_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "quantity",
+        "INT UNSIGNED"
+      ],
+      [
+        "serving_type",
+        "VARCHAR(10)"
+      ],
+      [
+        "operation_token",
+        "VARCHAR(64)"
+      ],
+      [
+        "served_by",
+        "INT UNSIGNED"
+      ],
+      [
+        "served_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "serving_id",
+    "refs": [
+      [
+        "sale_item_id",
+        "sale_items",
+        "sale_item_id"
+      ],
+      [
+        "daily_menu_item_id",
+        "daily_menu_items",
+        "daily_menu_item_id"
+      ],
+      [
+        "served_by",
+        "users",
+        "user_id"
+      ]
+    ]
+  },
+  "payments": {
+    "fields": [
+      [
+        "payment_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "sale_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "amount_paid",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "cash_tendered",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "change_given",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "paid_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "payment_id",
+    "refs": [
+      [
+        "sale_id",
+        "sales",
+        "sale_id"
+      ]
+    ]
+  },
+  "units": {
+    "fields": [
+      [
+        "unit_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "unit_name",
+        "VARCHAR(30)"
+      ],
+      [
+        "symbol",
+        "VARCHAR(10)"
+      ]
+    ],
+    "pk": "unit_id",
+    "refs": []
+  },
+  "inventory_items": {
+    "fields": [
+      [
+        "inventory_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "unit_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "name",
+        "VARCHAR(100)"
+      ],
+      [
+        "reorder_level",
+        "DECIMAL(12,3)"
+      ],
+      [
+        "is_active",
+        "BOOLEAN"
+      ],
+      [
+        "created_at",
+        "DATETIME"
+      ],
+      [
+        "updated_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "inventory_item_id",
+    "refs": [
+      [
+        "unit_id",
+        "units",
+        "unit_id"
+      ]
+    ]
+  },
+  "suppliers": {
+    "fields": [
+      [
+        "supplier_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "name",
+        "VARCHAR(100)"
+      ],
+      [
+        "contact_number",
+        "VARCHAR(30)"
+      ],
+      [
+        "address",
+        "VARCHAR(255)"
+      ],
+      [
+        "is_active",
+        "BOOLEAN"
+      ]
+    ],
+    "pk": "supplier_id",
+    "refs": []
+  },
+  "stock_receipts": {
+    "fields": [
+      [
+        "stock_receipt_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "receipt_token",
+        "VARCHAR(64)"
+      ],
+      [
+        "supplier_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "received_by",
+        "INT UNSIGNED"
+      ],
+      [
+        "received_at",
+        "DATETIME"
+      ],
+      [
+        "reference_number",
+        "VARCHAR(50)"
+      ],
+      [
+        "payment_source",
+        "VARCHAR(10)"
+      ],
+      [
+        "cash_session_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "status",
+        "VARCHAR(10)"
+      ],
+      [
+        "posted_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "stock_receipt_id",
+    "refs": [
+      [
+        "supplier_id",
+        "suppliers",
+        "supplier_id"
+      ],
+      [
+        "received_by",
+        "users",
+        "user_id"
+      ],
+      [
+        "cash_session_id",
+        "cash_sessions",
+        "cash_session_id"
+      ]
+    ]
+  },
+  "stock_receipt_items": {
+    "fields": [
+      [
+        "stock_receipt_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "stock_receipt_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "inventory_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "quantity",
+        "DECIMAL(12,3)"
+      ],
+      [
+        "unit_cost",
+        "DECIMAL(12,2)"
+      ]
+    ],
+    "pk": "stock_receipt_item_id",
+    "refs": [
+      [
+        "stock_receipt_id",
+        "stock_receipts",
+        "stock_receipt_id"
+      ],
+      [
+        "inventory_item_id",
+        "inventory_items",
+        "inventory_item_id"
+      ]
+    ]
+  },
+  "stock_movements": {
+    "fields": [
+      [
+        "movement_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "inventory_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "stock_receipt_item_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "movement_type",
+        "VARCHAR(20)"
+      ],
+      [
+        "quantity_change",
+        "DECIMAL(12,3)"
+      ],
+      [
+        "reason",
+        "VARCHAR(255)"
+      ],
+      [
+        "operation_token",
+        "VARCHAR(64)"
+      ],
+      [
+        "recorded_by",
+        "INT UNSIGNED"
+      ],
+      [
+        "recorded_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "movement_id",
+    "refs": [
+      [
+        "inventory_item_id",
+        "inventory_items",
+        "inventory_item_id"
+      ],
+      [
+        "stock_receipt_item_id",
+        "stock_receipt_items",
+        "stock_receipt_item_id"
+      ],
+      [
+        "recorded_by",
+        "users",
+        "user_id"
+      ]
+    ]
+  },
+  "expense_categories": {
+    "fields": [
+      [
+        "expense_category_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "name",
+        "VARCHAR(50)"
+      ],
+      [
+        "is_active",
+        "BOOLEAN"
+      ]
+    ],
+    "pk": "expense_category_id",
+    "refs": []
+  },
+  "expenses": {
+    "fields": [
+      [
+        "expense_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "expense_category_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "amount",
+        "DECIMAL(12,2)"
+      ],
+      [
+        "paid_at",
+        "DATETIME"
+      ],
+      [
+        "description",
+        "VARCHAR(255)"
+      ],
+      [
+        "payment_source",
+        "VARCHAR(10)"
+      ],
+      [
+        "cash_session_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "operation_token",
+        "VARCHAR(64)"
+      ],
+      [
+        "recorded_by",
+        "INT UNSIGNED"
+      ],
+      [
+        "created_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "expense_id",
+    "refs": [
+      [
+        "expense_category_id",
+        "expense_categories",
+        "expense_category_id"
+      ],
+      [
+        "cash_session_id",
+        "cash_sessions",
+        "cash_session_id"
+      ],
+      [
+        "recorded_by",
+        "users",
+        "user_id"
+      ]
+    ]
+  },
+  "audit_logs": {
+    "fields": [
+      [
+        "audit_log_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "user_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "action",
+        "VARCHAR(50)"
+      ],
+      [
+        "entity_name",
+        "VARCHAR(50)"
+      ],
+      [
+        "record_id",
+        "INT UNSIGNED"
+      ],
+      [
+        "old_values",
+        "TEXT"
+      ],
+      [
+        "new_values",
+        "TEXT"
+      ],
+      [
+        "reason",
+        "VARCHAR(255)"
+      ],
+      [
+        "created_at",
+        "DATETIME"
+      ]
+    ],
+    "pk": "audit_log_id",
+    "refs": [
+      [
+        "user_id",
+        "users",
+        "user_id"
+      ]
+    ]
+  }
+}

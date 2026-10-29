@@ -1,0 +1,12 @@
+digraph usecases {
+graph [rankdir=LR,bgcolor=white,pad=.5,fontname="Arial",fontsize=22,label="CarinderEase use case diagram",labelloc=t,nodesep=.4,ranksep=1.1];
+node [fontname="Arial",fontsize=12];edge [color="#91a48c",arrowhead=none];
+Owner[shape=box,style=rounded,label="«actor»\nOwner",color="#173e32"];Cashier[shape=box,style=rounded,label="«actor»\nCashier",color="#173e32"];Staff[shape=box,style=rounded,label="«actor»\nStaff",color="#173e32"];
+subgraph cluster_system {
+label="CarinderEase";fontsize=16;color="#bacbb2";style=rounded;
+node [shape=ellipse,style=filled,fillcolor="#f1f5ec",color="#bacbb2",margin=".16,.10"];
+login[label="Log in and update\nown profile"];masters[label="Manage accounts\nand master catalogs"];pricing[label="Configure combos\nand selling prices"];menu[label="Publish daily menu\nand prepared quantities"];sale[label="Process counter sale"];availability[label="Check food\navailability"];payment[label="Record payment\nand initial servings"];rice[label="Record rice refill"];visit[label="Close customer visit"];receive[label="Receive supplies"];stock[label="Record kitchen use\nand wastage"];adjust[label="Correct ingredient stock"];expense[label="Record operating expense"];cash[label="Open and reconcile\nown cash session"];reports[label="Review reports\nand audit history"];
+}
+Owner->login;Cashier->login;Staff->login;Owner->masters;Owner->pricing;Owner->menu;Staff->menu;Owner->sale;Cashier->sale;Owner->rice;Cashier->rice;Staff->rice;Owner->visit;Cashier->visit;Staff->visit;Owner->receive;Staff->receive;Owner->stock;Staff->stock;Owner->adjust;Owner->expense;Owner->cash;Cashier->cash;Owner->reports;
+sale->availability [style=dashed,arrowhead=open,label="«include»",fontsize=10];sale->payment [style=dashed,arrowhead=open,label="«include»",fontsize=10];rice->availability [style=dashed,arrowhead=open,label="«include»",fontsize=10];
+}
